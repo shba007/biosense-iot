@@ -1,0 +1,8 @@
+{
+  "board": "esp32:esp32:esp32doit-devkit-v1",
+  "sketch": "iot.ino",
+  "port": "COM5",
+  "output": "./build",
+  "programmer": "esptool",
+  "configuration": "FlashFreq=80,UploadSpeed=921600,DebugLevel=none,EraseFlash=none"
+}
