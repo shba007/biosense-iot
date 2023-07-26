@@ -1,5 +1,6 @@
 #include <WiFiClientSecure.h>
-// #include "./config.h"
+
+// #include "./config.ino"
 
 IPAddress setupWiFi()
 {
@@ -21,13 +22,13 @@ IPAddress setupWiFi()
 
     if (WiFi.status() == WL_CONNECTED)
     {
-        Serial.println("\nConnected to " + String(SSID));
-        Serial.println("Local IP: " + WiFi.localIP().toString());
+        Serial.print("\nConnected to WiFi " + String(SSID));
+        Serial.println(" [Local IP: " + WiFi.localIP().toString() + "] ");
     }
     else
     {
-        Serial.println("\nUnable to connect to " + String(SSID));
-        Serial.println("Error Code: " + String(WiFi.status()));
+        Serial.print("\nUnable to connect to " + String(SSID));
+        Serial.println(" [Error Code: " + String(WiFi.status()) + "] ");
     }
 
     return WiFi.localIP();

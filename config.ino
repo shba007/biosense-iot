@@ -14,7 +14,7 @@ String ClientPassword = "";
 
 void setupVariables()
 {
-    Serial.println("Opening file config.json");
+    Serial.println("Opening config.json file\n");
     File configFile = LittleFS.open("/config.json", "r");
     if (!configFile)
     {
@@ -61,4 +61,5 @@ void setupVariables()
     Serial.println("ClientUsername: " + ClientUsername);
     Serial.println("ClientPassword: " + ClientPassword);
     Serial.println("RootCACert: " + RootCACert);
+    Serial.println();
 }

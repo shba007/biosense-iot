@@ -12,8 +12,8 @@ void loopHTTP()
 {
     if (millis() - lastFetchTime >= fetchInterval)
     {
-        fetchJoke();
         lastFetchTime = millis();
+        fetchJoke();
     }
 }
 

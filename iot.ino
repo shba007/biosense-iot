@@ -1,10 +1,10 @@
-/* #include "./utils/file.h"
-#include "./utils/config.h"
-#include "./utils/wifi.h"
-#include "./utils/time.h"
-#include "./utils/http.h"
-#include "./utils/mqtt.h"
- */
+// #include "./file.ino"
+// #include "./config.ino"
+// #include "./wifi.ino"
+// #include "./time.ino"
+// #include "./utils/http.h"
+// #include "./mqtt.ino"
+
 #include <FS.h>
 #include <LittleFS.h>
 #include <ArduinoJson.h>
@@ -23,10 +23,12 @@ void setup()
     setupWiFi();
     setupTime();
     setupMQTT();
+    setupIO();
 }
 
 void loop()
 {
     // loopHTTP();
     loopMQTT();
+    inputIO();
 }

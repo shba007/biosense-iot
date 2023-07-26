@@ -2,7 +2,8 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 
-// #include "./config.h"
+// #include "./config.ino"
+// #include "./io.ino"
 
 WiFiClientSecure wifiClient;
 PubSubClient mqttClient(wifiClient);
@@ -13,23 +14,7 @@ void setupMQTT()
 {
     wifiClient.setCACert(RootCACert.c_str());
     mqttClient.setServer(BrokerURL.c_str(), BrokerPort);
-    mqttClient.setCallback(callbackMQTT);
-}
-
-void callbackMQTT(char *topic, byte *payload, unsigned int length)
-{
-    digitalWrite(LED_BUILTIN, HIGH); // Turn the LED on
-
-    Serial.print("Message arrived [" + String(topic) + "]: ");
-    if ((char)payload[0] != NULL)
-    {
-        for (int i = 0; i < length; i++)
-            Serial.print((char)payload[i]);
-
-        Serial.println();
-        delay(500);
-    }
-    digitalWrite(LED_BUILTIN, LOW); // Turn the LED off
+    mqttClient.setCallback(subscribe);
 }
 
 void loopMQTT()
@@ -50,7 +35,7 @@ void reconnectMQTT()
     {
         if (mqttClient.connect(Hostname.c_str(), ClientUsername.c_str(), ClientPassword.c_str()))
         {
-            Serial.println("\nConnected to " + String(BrokerURL));
+            Serial.println("\nConnected to MQTT Broker" + String(BrokerURL));
 
             // ALL Subscriptions
             mqttClient.subscribe("pump/mode");
@@ -103,8 +88,49 @@ void reconnectMQTT()
     Serial.println();
 }
 
+void subscribe(char *_topic, byte *_payload, unsigned int length)
+{
+    digitalWrite(LED_BUILTIN, HIGH); // Turn the LED on
+
+    char payloadArray[length + 1];
+    memcpy(payloadArray, _payload, length);
+    payloadArray[length] = '\0';
+
+    String topic(_topic);
+    String payload(payloadArray);
+
+    Serial.println("Received [" + topic + "]: " + payload);
+
+    outputIO(topic, payload);
+
+    digitalWrite(LED_BUILTIN, LOW); // Turn the LED off
+}
+
+// Overloaded version for int data type
 void publish(const char *topic, const int data, bool retained = false)
 {
-    itoa(data, MQTTpayload, 10);
-    mqttClient.publish(topic, MQTTpayload, retained);
+    char buffer[16]; // Adjust the size as needed
+    itoa(data, buffer, 10);
+    mqttClient.publish(topic, buffer, retained);
+}
+
+// Overloaded version for float data type
+void publish(const char *topic, const float data, bool retained = false)
+{
+    char buffer[16];             // Adjust the size as needed
+    dtostrf(data, 0, 2, buffer); // Convert float to string with 2 decimal places
+    mqttClient.publish(topic, buffer, retained);
+}
+
+// Overloaded version for bool data type
+void publish(const char *topic, const bool data, bool retained = false)
+{
+    const char *payload = data ? "true" : "false";
+    mqttClient.publish(topic, payload, retained);
+}
+
+// Overloaded version for String data type
+void publish(const char *topic, const String &data, bool retained = false)
+{
+    mqttClient.publish(topic, data.c_str(), retained);
 }
