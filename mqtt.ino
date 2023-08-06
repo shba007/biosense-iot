@@ -28,6 +28,7 @@ void loopMQTT()
 void reconnectMQTT()
 {
     int attemptCounter = 0;
+    Hostname += " 2";
 
     Serial.print("Connecting to MQTT Broker " + BrokerURL + " as " + Hostname);
 
@@ -38,8 +39,10 @@ void reconnectMQTT()
             Serial.println("\nConnected to MQTT Broker" + String(BrokerURL));
 
             // ALL Subscriptions
-            mqttClient.subscribe("pump/mode");
-            mqttClient.subscribe("pump/state");
+            mqttClient.subscribe("light/mode");
+            mqttClient.subscribe("light/state");
+            mqttClient.subscribe("spray/mode");
+            mqttClient.subscribe("spray/amount");
         }
         else
         {
